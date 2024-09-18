@@ -1,0 +1,184 @@
+<!-- Work Assignments PAGE -->
+<!-- Visualizes the EmployeeHasWorkOrders Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<head>
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+
+    if (dowhat == 'add-workAssignment-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'update-workAssignment-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'delete-workAssignment-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+  }
+  function newWorkAssignment() { showform('add-workAssignment-form-ajax'); }
+  function updateWorkAssignment(pid) { showform('update-workAssignment-form-ajax'); }
+  function deleteWorkAssignment(pid) { showform ('delete-workAssignment-form-ajax'); }
+  function browseWorkAssignments() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+
+{{!-- Displays all existing EmployeeHasWorkOrders entries in the database upon loading the page --}}
+<body onload="browseWorkAssignments()"> </body>
+
+<h1>Work Assignments</h1>
+[<a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Work Assignments</strong></p>
+
+<button onclick="newWorkAssignment()">Add a New Work Assignment</button> <button onclick="updateWorkAssignment()">Edit Work Assignment</button>
+<p></p>
+
+<table id = "workAssignments-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.workAssignmentID}}</td>
+            <td>{{this.Employee_Last_Name}}</td>
+            <td>{{this.Employee_First_Name}}</td>
+            <td>{{this.Unit}}</td>
+            <td>{{this.Date}}</td>
+            <td>{{this.Description}}</td>
+            <td>{{this.Completion_Status}}</td>
+            <td><button onclick="deleteWorkAssignment({{this.workAssignmentID}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+
+
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Work Assignment</h2>
+<p>To add a new work assignment, please enter its information below and click 'Submit'!
+<br>New work assignments can only be created using incomplete work orders and active maintenance employees.<br><br></p>
+<form method="POST" id="add-workAssignment-form-ajax">
+    <select name="input-unit-date" id="input-unit-date" required>
+        <option value="">Select the Unit and Date of the Work Order</option>
+        {{#each add_unit_dates}}
+        <option value="{{this.workOrderID}}">{{this.Work_Order_Unit_And_Submission_Date}}</option>
+        {{/each}}
+    </select>
+
+    <select name="input-employee" id="input-employee" required>
+        <option value="">Select a Maintenance Employee</option>
+        {{#each employees}}
+        <option value="{{this.employeeID}}">{{this.Employee_Name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit" onClick="browseWorkAssignments()">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_WorkAssignment.js"></script>
+</div>
+<p>&nbsp;</p>
+
+
+{{!-- UPDATE OPERATION --}}
+<div id="update">
+<h2>Updating an Existing Work Assignment</h2>
+<p>To assign a new maintenance employee to an existing work order, please locate the incomplete work order from the dropdown menu and then identify an active maintenance employee to assign to this work order.</p>
+<form id="update-workAssignment-form-ajax">
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Work Order identifiers that have hidden workOrderID FK values --}}
+    <label for="input-workAssignmentID">Work Order Unit and Date: </label>
+    <select name="input-workAssignmentID" id="mySelect" required>
+        <option value="test">Select a Work Order</option>
+        {{#each unit_dates}}
+        <option value="{{this.workAssignmentID}}">{{this.Work_Order_Unit_And_Submission_Date}} {{this.Employee_Name}}</option>
+        {{/each}}
+    </select>
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Employee names that have hidden employeeID FK values --}}
+    <label for="input-employee-update">Maintenance Employee: </label>
+    <select name="input-employee-update" id="input-employee-update" required>
+        <option>Select an Employee</option>
+        {{#each employees}}
+        <option value="{{this.employeeID}}">{{this.Employee_Name}}</option>
+        {{/each}}
+    </select>
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/update_WorkAssignment.js"></script>
+</div>
+
+
+{{!-- Form to delete a record from the table --}}
+<div id="delete"> 
+  <form method="DELETE" id="delete-workAssignment-form-ajax">
+      <legend><strong>Delete Work Assignment</strong></legend>
+      <input class="btn" type="submit" id="DeleteWorkAssignment" value="Delete Work Assignment">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkAssignments()">
+  </form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/delete_WorkAssignment.js"></script>
+</div> 
+</body>
+</html>

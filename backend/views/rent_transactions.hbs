@@ -1,0 +1,128 @@
+<!-- RENT TRANSACTIONS PAGE -->
+<!-- Visualizes the RentTransactions Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+
+<body>
+<h1>Rent Transactions</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</body>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    if (dowhat == 'add-rent-transaction-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+    }
+  }
+  function newRentTransaction() { showform('add-rent-transaction-form-ajax'); }
+  function browseRentTransactions() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+
+{{!-- Displays all existing RentTransactions entries in the database upon loading the page --}}
+<body onload="browseRentTransactions()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Rent Transactions</strong></p>
+
+<button onclick="newRentTransaction()">Add a New Transaction</button>
+<p>
+
+</p>
+<table id="rent-transactions-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.Transaction_ID}}</td>
+            <td>{{this.Resident_ID}}</td>
+            <td>{{this.Resident_Last_Name}}</td>
+            <td>{{this.Resident_First_Name}}</td>
+            <td>{{this.Unit}}</td>
+            <td>{{this.Date}}</td>
+            <td>{{this.Amount}}</td>
+            <td>{{this.Payment_Type}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Rent Transaction</h2>
+<p>To add a new transaction, please select the resident, fill in the information, and click Submit!<br><br></p>
+<form method="POST" id="add-rent-transaction-form-ajax">
+    
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Resident names that have hidden residentID FK values --}}
+    <label for="input-residentID">Full Name: </label>
+    <select name="input-residentID" id="input-residentID" required>
+        <option value="test">Select a Resident</option>
+        {{#each residentNames}}
+        <option value="{{this.residentID}}">{{this.Full_Name}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-date">Date: </label>
+    <input type="date" name="input-date" id="input-date" required>
+    
+    <label for="input-amount">Amount: </label>
+    <input type="number" name="input-amount" id="input-amount" required>
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable PaymentType names that have hidden paymentTypeID FK values --}}
+    <label for="input-paymentType">Payment Type: </label>
+    <select name="input-paymentType" id="input-paymentType" required>
+        <option value="test">Select a Payment Type</option>
+        {{#each paymentTypes}}
+        <option value="{{this.Payment_Types}}">{{this.Payment_Types}}</option>
+        {{/each}}
+    </select>
+
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_RentTransaction.js"></script>
+</div>

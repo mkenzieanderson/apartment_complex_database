@@ -1,0 +1,259 @@
+<!-- RESIDENTS PAGE -->
+<!-- Visualizes the Residents Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+
+<head>
+<h1>Residents</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</head>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+
+    if (dowhat == 'add-resident-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'update-resident-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'delete-resident-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else {//by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+  }
+  function newResident() { showform('add-resident-form-ajax'); }
+  function updateResident(residentID) { showform('update-resident-form-ajax'); }
+  function deleteResident(residentID) { showform ('delete-resident-form-ajax'); }
+  function browseResidents() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+
+{{!-- Displays all existing Residents entries in the database upon loading the page --}}
+<body onload="browseResidents()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Residents</strong></p>
+
+<button onclick="newResident()">Add a New Resident</button> <button onclick="updateResident()">Edit Resident Information</button>
+<p></p>
+
+<table id="residents-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th>Delete</th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.residentID}}</td>
+            <td>{{this.Unit}}</td>
+            <td>{{this.Last_Name}}</td>
+            <td>{{this.First_Name}}</td>
+            <td>{{this.Active_Status}}</td>
+            <td>{{this.Phone}}</td>
+            <td>{{this.Email}}</td>
+            <td>{{this.Lease_Start_Date}}</td>
+            <td>{{this.Lease_End_Date}}</td>
+            <td>{{this.License_Plate}}</td>
+            <td>{{this.Has_Pets}}</td>
+            <td><button onclick="deleteResident({{this.residentID}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Resident</h2>
+<p>To add a new resident, please enter their information below and click 'Submit'!<br><br></p>
+
+
+<form method="POST" id="add-resident-form-ajax">
+    
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Unit names that have hidden unitID FK values --}}
+    <label for="input-unitID">Unit: </label>
+        <select name="input-unitID" id="input-unitID" required>
+        <option value=''>Select a Unit</option>
+        <option value="NULL">NULL</option>
+        {{#each units}}
+        <option value="{{this.unitID}}">{{this.unitID}}</option>
+        {{/each}}
+        </select>
+
+    <label for="input-lastName">Last Name: </label>
+    <input type="text" name="input-lastName" id="input-lastName" required>
+    
+    <label for="input-firstName">First Name: </label>
+    <input type="text" name="input-firstName" id="input-firstName" required>
+
+    {{!-- Dropdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-isActive">Active Status: </label>
+        <select name="input-isActive" id="input-isActive" required>
+        <option value="">Select an Option</option>
+        <option value="1">Active (1)</option>
+        <option value="0">Inactive (0)</option>
+        </select>
+
+    <label for="input-phone">Phone Number: </label>
+    <input type="tel" name="input-phone" id="input-phone" placeholder="123-456-7890" required>
+
+    <label for="input-email">Email: </label>
+    <input type="email" name="input-email" id="input-email" placeholder="username@domain.com" required>
+
+    <label for="input-leaseStart">Lease Start Date: </label>
+    <input type="date" name="input-leaseStart" id="input-leaseStart" required>
+
+    <label for="input-leaseEnd">Lease End Date: </label>
+    <input type="date" name="input-leaseEnd" id="input-leaseEnd" required>
+
+    <label for="input-licensePlate">License Plate Number: </label>
+    <input type="text" name="input-licensePlate" id="input-licensePlate">
+
+    {{!-- Dropdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-pet">Has Pet(s): </label>
+        <select name="input-pet" id="input-pet" required>
+        <option value="">Select an Option</option>
+        <option value="1">Has Pets (1)</option>
+        <option value="0">No Pets (0)</option>
+        </select>
+
+
+    <input type="submit" onClick="browseResidents()">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_Resident.js"></script>
+</div>
+
+
+{{!-- UPDATE OPERATION --}}
+<div id="update">
+<h2>Update a Resident's Unit Form</h2>
+<p>Please select the resident by name, then fill in the remaining textboxes with the updated resident information.
+  <br>Please note that leaving an input box blank will result in no update to that attribute. 
+  <br>Hit "Submit" to send your changes through! <br><br></p>
+<form method="PUT" id="update-resident-form-ajax">
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Resident names that have hidden residentID FK values --}}
+    <label for="input-fullname">Full name: </label>
+    <select name="input-fullname" id="mySelect" required>
+        <option value="test">Select a Resident</option>
+        {{#each residentNames}}
+        <option value="{{this.residentID}}">{{this.Full_Name}}</option>
+        {{/each}}
+    </select>
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Unit names that have hidden unitID FK values --}}
+    <label for="input-unit">Unit: </label>
+    <select name="input-unit" id="input-unit-update">
+        <option value=''>Select a Unit</option>
+        <option value="NULL">NULL</option>
+        {{#each units}}
+        <option value="{{this.unitID}}">{{this.unitID}}</option>
+        {{/each}}
+    </select>
+
+    {{!-- Drdpdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-isActive">Active Status: </label>
+    <select name="input-isActive-update" id="input-isActive-update">
+        <option value="2">Select an Option</option>
+        <option value="1">Active (1)</option>
+        <option value="0">Inactive (0)</option>
+    </select>
+
+    <label for="input-phone">Phone Number: </label>
+    <input type="tel" name="input-phone-update" id="input-phone-update" placeholder="123-456-7890">
+
+    <label for="input-email">Email: </label>
+    <input type="email" name="input-email-update" id="input-email-update" placeholder="username@domain.com">
+
+    <label for="input-leaseStart">Lease Start Date: </label>
+    <input type="date" name="input-leaseStart-update" id="input-leaseStart-update">
+
+    <label for="input-leaseEnd">Lease End Date: </label>
+    <input type="date" name="input-leaseEnd-update" id="input-leaseEnd-update">
+
+    <label for="input-licensePlate">License Plate Number: </label>
+    <input type="text" name="input-licensePlate-update" id="input-licensePlate-update">
+
+    {{!-- Drdpdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-pet">Has Pet(s): </label>
+    <select name="input-pet-update" id="input-pet-update">
+        <option value="2">Select an Option</option>
+        <option value="1">Has Pets (1)</option>
+        <option value="0">No Pets (0)</option>
+    </select>
+
+    <input type="submit" onClick="browseResidents()">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/update_Resident.js"></script>
+</div>
+
+
+<p>&nbsp;</p>
+<div id="delete"> 
+  <form method="DELETE" id="delete-resident-form-ajax">
+    <fieldset class="fields">
+        <input type="hidden" name="residentID" id="deleteResidentID" value="{{this.residentID}}">
+  </fieldset>
+  </form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/delete_Resident.js"></script>
+</div> 
+</body>

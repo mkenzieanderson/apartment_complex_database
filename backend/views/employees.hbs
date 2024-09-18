@@ -1,0 +1,210 @@
+<!-- EMPLOYEE PAGE -->
+<!-- Visualizes the MaintenanceEmployees Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<!-- ADD THE NODE JS GIT ONE HERE  -->
+
+
+<head>
+<h1>Employees</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</head>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+
+    if (dowhat == 'add-employee-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'update-employee-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'delete-employee-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else {//by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+  }
+  function newEmployee() { showform('add-employee-form-ajax'); }
+  function updateEmployee(employeeID) { showform('update-employee-form-ajax'); }
+  function deleteEmployee(employeeID) { showform ('delete-employee-form-ajax'); }
+  function browseEmployees() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+
+{{!-- Displays all existing Employees entries in the database upon loading the page --}}
+<body onload="browseEmployees()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Employees</strong></p>
+
+<button onclick="newEmployee()">Add a New Employee</button> <button onclick="updateEmployee()">Edit Employee Information</button>
+<p></p>
+
+<table id="employees-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+            <th></th>
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.Employee_ID}}</td>
+            <td>{{this.Last_Name}}</td>
+            <td>{{this.First_Name}}</td>
+            <td>{{this.Active_Status}}</td>
+            <td>{{this.Phone}}</td>
+            <td>{{this.Email}}</td>
+            <td><button onclick="deleteEmployee({{this.Employee_ID}})">Delete</button></td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+<p>&nbsp;</p>
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Employee</h2>
+<p>To add a new employee, please enter their information below and click 'Submit'!<br><br></p>
+<form method="POST" id="add-employee-form-ajax">
+
+    <label for="input-lastName">Last Name: </label>
+    <input type="text" name="input-lastName" id="input-lastName" required>
+    
+    <label for="input-firstName">First Name: </label>
+    <input type="text" name="input-firstName" id="input-firstName" required>
+
+    <label for="input-isActive">Active Status: </label>
+    <select name="input-isActive" id="input-isActive" required>
+        <option value="">Select an Option</option>
+        <option value="1">Active (1)</option>
+        <option value="0">Inactive (0)</option>
+    </select>
+
+    <label for="input-phone">Phone Number: </label>
+    <input type="text" name="input-phone" id="input-phone" required>
+
+    <label for="input-email">Email: </label>
+    <input type="text" name="input-email" id="input-email" required>
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_Employee.js"></script>
+</div>
+
+
+{{!-- UPDATE OPERATION --}}
+<div id="update">
+<h2>Update a Employee's Unit Form</h2>
+<p>Please select the employee by name, then fill in the remaining textboxes with the updated employee information.
+  <br>Please note that leaving an input box blank will result in no update to that attribute. 
+  <br>Hit "Submit" to send your changes through! <br><br></p>
+
+
+<form method="PUT" id="update-employee-form-ajax">
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Employee names that have hidden employeeID FK values --}}
+    <label for="input-fullname">Full name: </label>
+    <select name="input-fullname" id="input-employeeID-update" required>
+        <option value="test">Select a Employee</option>
+        {{#each employeeNames}}
+        <option value="{{this.employeeID}}">{{this.Full_Name}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-lastName">Last Name: </label>
+    <input type="text" name="input-lastName" id="input-lastName-update">
+    
+    <label for="input-firstName">First Name: </label>
+    <input type="text" name="input-firstName" id="input-firstName-update">
+
+    {{!-- Dropdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-isActive">Active Status (1 for Yes, 0 for No): </label>
+    <select name="input-isActive" id="input-isActive-update">
+        <option value=""></option>
+        <option value="1">Active (1)</option>
+        <option value="0">Inactive (0)</option>
+    </select>
+
+    <label for="input-phone">Phone Number: </label>
+    <input type="text" name="input-phone" id="input-phone-update">
+
+    <label for="input-email">Email: </label>
+    <input type="text" name="input-email" id="input-email-update">
+
+    <input type="submit">
+</form> 
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/update_Employee.js"></script>
+</div>
+
+
+<p>&nbsp;</p>
+<div id="delete"> 
+  <form method="DELETE" id="delete-employee-form-ajax">
+          <fieldset class="fields">
+            <input type="hidden" name="employeeID" id="deleteEmployeeID" value="{{this.employeeID}}">
+    </fieldset>
+    <input class="btn" type="submit" id="DeleteEmployee" value="Delete Employee">
+          <input class="btn" type="button" value="cancel" onClick="browseEmployees()">
+  </form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/delete_Employee.js"></script>
+</div> 
+
+</body>

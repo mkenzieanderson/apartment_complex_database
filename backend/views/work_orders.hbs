@@ -1,0 +1,160 @@
+<!-- WORK ORDERS PAGE -->
+<!-- Visualizes the WorkOrders Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<body>
+<h1>Work Orders</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</body>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * three DIVS: browse, insert, update
+    * this function sets one visible the others not
+    */
+
+    if (dowhat == 'add-work-order-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+    }
+    else if (dowhat == 'update-work-order-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+    }
+  }
+  function newWorkOrder() { showform('add-work-order-form-ajax'); }
+  function updateWorkOrder() { showform('update-work-order-form-ajax'); }
+  function browseWorkOrders() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+{{!-- Displays all existing WorkOrders entries in the database upon loading the page --}}
+<body onload="browseWorkOrders()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Work Orders</strong></p>
+
+<button onclick="newWorkOrder()">Add a New Work Order</button> <button onclick="updateWorkOrder()">Edit Open Work Order</button>
+<p></p>
+
+<table id="work-orders-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.Work_Order_ID}}</td>
+            <td>{{this.Unit}}</td>
+            <td>{{this.Description}}</td>
+            <td>{{this.Submission_Date}}</td>
+            <td>{{this.Completion_Date}}</td>
+            <td>{{this.Completion_Status}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Work Order</h2>
+<p>To add a new work order, please enter its information below and click Submit!<br><br></p>
+<form method="POST" id="add-work-order-form-ajax">
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Unit names that have hidden unitID FK values --}}
+    <label for="input-unit">Unit: </label>
+    <select name="input-unit" id="input-unit" required>
+        <option value=''>Select a Unit</option>
+        <option value="NULL">NULL</option>
+        {{#each units}}
+        <option value="{{this.unitID}}">{{this.unitID}}</option>
+        {{/each}}
+    </select>
+    
+    <label for="input-description">Description: </label>
+    <input type="text" name="input-description" id="input-description" required>
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_WorkOrder.js"></script>
+</div>
+
+{{!-- UPDATE OPERATION --}}
+<div id="update">
+<h2>Update Work Order Form</h2>
+<p>Please select an open work order, update the description or completion date, then hit Submit!
+  <br>Please note that leaving an input box blank will result in no update to that attribute.<br><br></p>
+<form method="PUT" id="update-work-order-form-ajax">
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable WorkOrder identifers that have hidden workOrderID FK values --}}
+    <label for="input-work-order">Work Order: </label>
+    <select name="input-work-order" id="input-work-order-update" required>
+        <option>Select a Work Order</option>
+        {{#each openWorkOrders}}
+        <option value="{{this.Work_Order_ID}}">{{this.Work_Order_ID}}</option>
+        {{/each}}
+    </select>
+
+    {{!-- Query results were sent in the HTTP Response, which allowed us to genereate a dropdown menu of readable Unit names that have hidden unitID FK values --}}
+    <label for="input-unit">Unit: </label>
+    <select name="input-unit" id="input-unit-update">
+        <option value =''>Select a Unit</option>
+        <option value="NULL">NULL</option>
+        {{#each units}}
+        <option value="{{this.unitID}}">{{this.unitID}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-description">Description: </label>
+    <input type="text" name="input-description" id="input-description-update">
+
+    <label for="input-completion-date">Completion Date: </label>
+    <input type="date" name="input-completion-date" id="input-completion-date-update">
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/update_WorkOrder.js"></script>
+</div>

@@ -1,0 +1,179 @@
+<!-- UNITS PAGE -->
+<!-- Visualizes the Units Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+
+<body>
+<h1>Units</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</body>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * three DIVS: browse, insert, update
+    * this function sets one visible the others not
+    */
+
+    if (dowhat == 'add-unit-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+    }
+    else if (dowhat == 'update-unit-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+    }
+  }
+  function newUnit() { showform('add-unit-form-ajax'); }
+  function updateUnit() { showform('update-unit-form-ajax'); }
+  function browseUnits() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+{{!-- Displays all existing Units entries in the database upon loading the page --}}
+<body onload="browseUnits()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Units</strong></p>
+
+<button onclick="newUnit()">Add a New Unit</button> <button onclick="updateUnit()">Edit Unit Information</button>
+<p></p>
+
+<table id="units-table" border="1" cellpadding="5">
+
+    {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.Unit}}</td>
+            <td>{{this.Vacancy_Status}}</td>
+            <td>{{this.Rent_Price}}</td>
+            <td>{{this.Bedrooms}}</td>
+            <td>{{this.Bathrooms}}</td>
+            <td>{{this.SQFT}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Unit</h2>
+<p>To add a new unit, please enter its information below and click 'Submit'!<br><br></p>
+
+<form method="POST" id="add-unit-form-ajax">
+
+    <label for="input-unitID">Unit: </label>
+    <input type="text" name="input-unitID" id="input-unitID" required>
+    
+    {{!-- Drdpdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-isVacant">Vacancy_Status: </label>
+    <select name="input-isVacant" id="input-isVacant" required>
+        <option value="">Select an Option</option>
+        <option value="1">Occupied (1)</option>
+        <option value="0">Vacant (0)</option>
+    </select>
+
+    </select>
+
+    <label for="input-rent">Rent_Price: </label>
+    <input type="number" name="input-rent" id="input-rent" required>
+
+    <label for="input-roomCount">Bedrooms: </label>
+    <input type="number" name="input-roomCount" id="input-roomCount" min="0" required>
+
+    <label for="input-bathCount">Bathrooms: </label>
+    <input type="number" name="input-bathCount" id="input-bathCount" min="0" required>
+
+    <label for="input-sqft">SQFT: </label>
+    <input type="number" name="input-sqft" id="input-sqft" min="0" required>
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_Unit.js"></script>
+</div>
+
+{{!-- UPDATE OPERATION --}}
+<div id="update">
+<h2>Update Unit Form</h2>
+<p>Please select the unit that you wish to update, then fill in the remaining textboxes with the updated unit information.
+  <br>Please note that leaving an input box blank will result in no update to that attribute. 
+  <br>Hit "Submit" to send your changes through! <br><br></p>
+<form method="PUT" id="update-unit-form-ajax">
+
+    <label for="input-unit">Unit: </label>
+    <select name="input-unit" id="input-unit-update" required>
+        <option>Select a Unit</option>
+        {{#each data}}
+        <option value="{{this.Unit}}">{{this.Unit}}</option>
+        {{/each}}
+    </select>
+
+    {{!-- Drdpdown menu of readable boolean values where the hidden value is 1 or 0, to minimize data entry error --}}
+    <label for="input-isVacant">Vacancy_Status: </label>
+    <select name="input-isVacant" id="input-isVacant-update">
+        <option value=""></option>
+        <option value="1">Occupied (1)</option>
+        <option value="0">Vacant (0)</option>
+
+    </select>
+
+    <label for="input-rent">Rent_Price: </label>
+    <input type="number" name="input-rent" id="input-rent-update">
+
+    <label for="input-roomCount">Bedrooms: </label>
+    <input type="number" name="input-roomCount" id="input-roomCount-update" min="0">
+
+    <label for="input-bathCount">Bathrooms: </label>
+    <input type="number" name="input-bathCount" id="input-bathCount-update" min="0">
+
+    <label for="input-sqft">SQFT: </label>
+    <input type="number" name="input-sqft" id="input-sqft-update" min="0">
+
+    <input type="submit">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/update_Unit.js"></script>
+</div>

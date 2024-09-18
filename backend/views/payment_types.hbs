@@ -1,0 +1,102 @@
+<!-- PAYMENT TYPES PAGE -->
+<!-- Visualizes the PaymentTypes Table -->
+
+<!-- SOURCE CODE CITATIONS -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app -->
+
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+
+<body>
+<h1>Payment Types</h1>
+
+[ <a href="/">Home</a> | <a href="/units">Units</a> | <a href='/residents'>Residents</a> | <a href="/rent_transactions">Rent Transactions</a> | <a href="/payment_types">Payment Types</a> | <a href="/employees">Employees</a> | <a href="/work_orders">Work Orders</a> | <a href="/work_assignments">Work Assignments</a> ]
+</body>
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    /*
+    * two DIVS: browse, insert
+    * this function sets one visible the other not
+    */
+
+    if (dowhat == 'add-payment-type-form-ajax'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+    }
+  }
+  function newPaymentType() { showform('add-payment-type-form-ajax'); }
+  function browsePaymentTypes() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+
+{{!-- Displays all existing PaymentType entries in the database upon loading the page --}}
+<body onload="browsePaymentTypes()">
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+<p><strong>Browse Payment Types</strong></p>
+<button onclick="newPaymentType()">Add a New Payment Type</button>
+<p></p>
+
+<table id="payment-type-table" border="1" cellpadding="5">
+      {{!-- Header section --}}
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+
+    {{!-- Body section --}}
+    <tbody>
+
+        {{!-- For each row, print the following attributes --}}
+        {{#each data}}
+        <tr>
+            <td>{{this.Payment_Type}}</td>
+            <td>{{this.Description}}</td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
+</div>
+
+
+
+{{!-- Form to add a record to the table  --}}
+<div id="insert">
+<h2>Add a New Payment Type</h2>
+<p>To add a payment type, please enter its information below and click 'Submit'!<br><br></p>
+<form method="POST" id="add-payment-type-form-ajax">
+    <label for="input-paymentTypeID">Payment Type: </label>
+    <input type="text" name="input-paymentTypeID" id="input-paymentTypeID" required>
+    
+    <label for="input-description">Description: </label>
+    <input type="text" name="input-description" id="input-description" required>
+
+    <input type="submit" onClick="browsePaymentTypes()">
+</form>
+
+{{!-- Embed our javascript to handle the DOM manipulation and AJAX request --}}
+<script src="./js/add_PaymentType.js"></script>
+</div>
