@@ -1,0 +1,161 @@
+<!-- EMPLOYEE PAGE -->
+<!-- Visualizes the MaintenanceEmployees Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Employees</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+  function showform(dowhat) {
+    /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+    if (dowhat == 'insert'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'delete'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+  }
+  function newEmployee() { showform('insert'); }
+  function updateEmployee(pid) { showform('update'); }
+  function deleteEmployee(pid) { showform ('delete'); }
+  function browseEmployees() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+<!-- The Employees table will always display when the page is clicked because browseEmployees() is called -->
+<body onload="browseEmployees()">
+<h1>Employees</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+
+<!-- This employee table will be autopopulated with entries from the database once that is connected -->
+<p><strong>Browse Employees</strong></p>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Employee_ID</th>
+    <th>Last_Name</th>
+    <th>First_Name</th>
+    <th>Active_Status</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th></th>
+    <th><a href="#" onClick="newEmployee()">New</a></th>  <!-- Clicking this button triggers an event to display the add new employee form -->
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Lane</td>
+    <td>Amy</td>
+    <td>True</td>
+    <td>202-660-5505</td>
+    <td>amy_construction@workmail.com</td>
+    <td><a href="#" onClick="updateEmployee('this.employeeID')">Edit</a></td>   <!-- Clicking this button triggers an event to display the update employee form -->
+    <td><a href="#" onclick="deleteEmployee('this.employeeID')">Delete</a></td> <!-- Clicking this button triggerrs an event to display the delete employee form -->
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Smith</td>
+    <td>Charles</td>
+    <td>True</td>
+    <td>202-851-4455</td>
+    <td>charles44@hello.com</td>
+    <td><a href="#" onClick="updateEmployee('this.employeeID')">Edit</a></td>
+    <td><a href="#" onclick="deleteEmployee('this.employeeID')">Delete</a></td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Johnson</td>
+    <td>Ryan</td>
+    <td>False</td>
+    <td>440-959-6636</td>
+    <td>ryry_j@mymail.com</td>
+    <td><a href="#" onClick="updateEmployee('this.employeeID')">Edit</a></td>
+    <td><a href="#" onclick="deleteEmployee('this.employeeID')">Delete</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+
+<!-- Input form to collect information for a new employee. Will be sent in a HTTP request once the backend is up and connected -->
+</div>
+<div id="insert">
+    <form method="POST" id="addEmployee">
+        <legend><strong>Add Employee</strong></legend>
+          <fieldset class="fields">
+            <label> Last_Name: </label> <input type="text" name="lastName">
+            <label> First_Name: </label> <input type="text" name="firstName">
+            <label> Phone: </label> <input type="text" name="phone">
+            <label> Email: </label> <input type="text" name="email">
+          </fieldset>
+          <input class="btn" type="submit" id="addEmployee" value="Add Employee">
+          <input class="btn" type="button" value="cancel" onClick="browseEmployees()">  <!-- Reload the modified Employees table after submitting this form -->
+	</form>
+</div>
+<p>&nbsp;</p>
+
+<!-- Input form to modify attributes for an existing employee. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="update">
+  <form method="POST" id="updateEmployee">
+      <legend><strong>Update Employee</strong></legend>
+          <fieldset class="fields">
+            <label> Employee_ID: </label> <input type="text" name="employeeID" value="1">
+            <label> Last_Name: </label> <input type="text" name="lastName" value="Lane">
+            <label> First_Name: </label> <input type="text" name="firstName" value="Amy">
+            <label> Phone: </label> <input type="text" name="phone" value="202-660-5505">
+            <label> Email: </label> <input type="text" name="email" value="amy_construction@workmail.com">
+    </fieldset>
+    <input class="btn" type="submit" id="UpdateEmployee" value="Update Employee">
+          <input class="btn" type="button" value="cancel" onClick="browseEmployees()">
+  </form> 
+</div><!-- update -->
+<p>&nbsp;</p>
+
+<!-- Input form to confirm that the user wishes to delete this employee. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="delete" style="display: block">
+  <form method="POST" id="deleteEmployee">
+      <legend><strong>Delete Employee</strong></legend>
+          <fieldset class="fields">
+            <p>Are you sure you wish to delete the following?</p>
+            <input type="hidden" name="employeeID" id="deleteemployeeID" value="1">
+            <label><strong>ID:</strong></label> 1
+              <label> <strong>Name</strong> </label> Amy Lane
+              
+      </fieldset>
+      <input class="btn" type="submit" id="DeleteEmployee" value="Delete Employee">
+            <input class="btn" type="button" value="cancel" onClick="browseEmployees()">
+    </form> 
+</div><!-- delete -->
+</body>
+</html>
