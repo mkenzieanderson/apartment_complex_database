@@ -1,0 +1,170 @@
+<!-- RESIDENT PAGE -->
+<!-- Visualizes the Residents Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Residents</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+
+<!--
+* four DIVS: browse, insert, update, delete
+* this function sets one visible the others not
+-->
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    if (dowhat == 'insert'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+    }
+  }
+  function newResident() { showform('insert'); }
+  function updateResident(pid) { showform('update'); }
+  function browseResidents() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+<!-- The Residents table will always display when the page is clicked because browseResidents() is called -->
+<body onload="browseResidents()">
+<h1>Residents</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+
+<!-- This resident table will be autopopulated with entries from the database once that is connected -->
+<p><strong>Browse Residents</strong></p>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Unit</th>
+    <th>Last_Name</th>
+    <th>First_Name</th>
+    <th>Active_Status</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Lease_Start_Date</th>
+    <th>Lease_End_Date</th>
+    <th>License_Plate</th>
+    <th>Has_Pets</th>
+    <th><a href="#" onClick="newResident()">New</a></th>    <!-- Clicking this button triggers an event to display the add new Resident form -->
+  </tr>
+  <tr>
+    <td>A201</td>
+    <td>Nelson</td>
+    <td>Maria</td>
+    <td>True</td>
+    <td>202-333-5454</td>
+    <td>maria_22@hello.com</td>
+    <td>9-30-2023</td>
+    <td>9-30-2024</td>
+    <td>ABC1234</td>
+    <td>False</td>
+    <td><a href="#" onClick="updateResident('this.residentID')">Edit</a></td> <!-- Clicking this button triggers an event to display the update Resident form -->
+  </tr>
+  <tr>
+    <td>A201</td>
+    <td>Nelson</td>
+    <td>Theo</td>
+    <td>True</td>
+    <td>202-414-5454</td>
+    <td>theooo@mymail.com</td>
+    <td>9-30-2023</td>
+    <td>9-30-2024</td>
+    <td></td>
+    <td>False</td>
+    <td><a href="#" onClick="updateResident('this.residentID')">Edit</a></td>
+  </tr>
+  <tr>
+    <td>A210</td>
+    <td>Green</td>
+    <td>Morgan</td>
+    <td>True</td>
+    <td>404-288-2828</td>
+    <td>smile_morgan@mymail.com</td>
+    <td>4-24-2024</td>
+    <td>5-23-2024</td>
+    <td>BCD4457</td>
+    <td>True</td>
+    <td><a href="#" onClick="updateResident('this.residentID')">Edit</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</div>
+
+<!-- Input form to collect information for a new Resident. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="insert">
+    <form method="POST" id="addResident">
+        <legend><strong>Add Resident</strong></legend>
+          <fieldset class="fields">
+            <label> Unit: </label> <select name="unitID" value="A116"> 
+              <option value="A116">A116</option>
+              <option value="A142">A142</option>
+              <option value="A201">A201</option>
+              <option value="A210">A210</option>
+              <option value="B308">B308</option>
+              </select>
+            <label> Last_Name: </label> <input type="text" name="lastName">
+            <label> First_Name: </label> <input type="text" name="firstName">
+            <label> Active_Status: </label> <input type="text" name="activeStatus">
+            <label> Phone: </label> <input type="text" name="phone">
+            <label> Email: </label> <input type="text" name="email">
+            <label> Lease_Start_Date: </label> <input type="text" name="leastStart">
+            <label> Lease_End_Date: </label> <input type="text" name="leastEnd">
+            <label> License_Plate: </label> <input type="text" name="licensePlate">
+            <label> Has_Pets: </label> <input type="text" name="pet">
+          </fieldset>
+          <input class="btn" type="submit" id="addResident" value="Add Resident">
+          <input class="btn" type="button" value="cancel" onClick="browseResidents()">    <!-- Reload the modified Residents table after submitting this form -->
+	</form>
+</div>
+
+<!-- Input form to update information for an existing Resident. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="update">
+  <form method="POST" id="updateResident">
+      <legend><strong>Update Resident</strong></legend>
+          <fieldset class="fields">
+            <label> Unit: </label> <select name="unitID" value="A116"> 
+              <option value="A116">A116</option>
+              <option value="A142">A142</option>
+              <option value="A201">A201</option>
+              <option value="A210">A210</option>
+              <option value="B308">B308</option>
+              </select>
+            <label> Last_Name: </label> <input type="text" name="lastName" value="Nelson">
+            <label> First_Name: </label> <input type="text" name="firstName" value="Maria">
+            <label> Active_Status: </label> <input type="text" name="activeStatus" value="True">
+            <label> Phone: </label> <input type="text" name="phone" value="202-333-5454">
+            <label> Email: </label> <input type="text" name="email" value="maria_22@hello.com">
+            <label> Lease_Start_Date: </label> <input type="text" name="leastStart" value="9-30-2023">
+            <label> Lease_End_Date: </label> <input type="text" name="leastEnd" value="9-30-2024">
+            <label> License_Plate: </label> <input type="text" name="licensePlate" value="ABC1234">
+            <label> Has_Pets: </label> <input type="text" name="pet" value="False">
+    </fieldset>
+    <input class="btn" type="submit" id="UpdateSaveResident" value="Save Update Resident">
+          <input class="btn" type="button" value="cancel" onClick="browseResidents()">
+  </form> 
+</div><!-- update -->
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!-- WORK ASSIGNMENTS PAGE -->
+<!-- Visualizes the EmployeeHasWorkOrders Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Work Assignments</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+  function showform(dowhat) {
+    /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+    if (dowhat == 'insert'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'none';
+    }
+    else if (dowhat == 'delete'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+      document.getElementById('delete').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+      document.getElementById('delete').style.display = 'none';
+    }
+  }
+  function newWorkAssignment() { showform('insert'); }
+  function updateWorkAssignment(pid) { showform('update'); }
+  function deleteWorkAssignment(pid) { showform ('delete'); }
+  function browseWorkAssignments() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+<!-- The WorkAssignments table will always display when the page is clicked because browseWorkAssignments() is called -->
+<body onload="browseWorkAssignments()"></body>
+<h1>Work Assignments</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<p><strong>Browse Units</strong></p>
+
+<!-- This Work Assignments table will be autopopulated with entries from the database once that is connected -->
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Employee_Last_Name</th>
+    <th>Employee_First_Name</th>
+    <th>Unit</th>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Completion_Status</th>
+    <th></th>
+    <th><a href="#" onClick="newWorkAssignment()">New</a></th>    <!-- Clicking this button triggers an event to display the add new Work Assignment form -->
+  </tr>
+  <tr>
+    <th>Lane</th>
+    <th>Amy</th>
+    <td>B308</td>
+    <td>2024-04-28</td>
+    <td>Window in the primary bedroom is leaking rainwater.</td>
+    <th>False</th>
+    <td><a href="#" onClick="updateWorkAssignment('this.workAssignmentID')">Edit</a></td>     <!-- Clicking this button triggers an event to display the update Work Assignment form -->
+    <td><a href="#" onclick="deleteWorkAssignment('this.workAssignmentID')">Delete</a></td>   <!-- Clicking this button triggers an event to display the delete Work Assignment form -->
+  </tr>
+  <tr>
+    <th>Smith</th>
+    <th>Charles</th>
+    <td>A201</td>
+    <td>2024-04-30</td>
+    <td>Dryer is not turning on.</td>
+    <th>False</th>
+    <td><a href="#" onClick="updateWorkAssignment('this.workAssignmentID')">Edit</a></td>
+    <td><a href="#" onclick="deleteWorkAssignment('this.workAssignmentID')">Delete</a></td>
+  </tr>
+  <tr>
+    <th>Johnson</th>
+    <th>Ryan</th>
+    <td>A201</td>
+    <td>2024-10-16</td>
+    <td>One of the living room windows does not stay open.</td>
+    <th>True</th>
+    <td><a href="#" onClick="updateWorkAssignment('this.workAssignmentID')">Edit</a></td>
+    <td><a href="#" onclick="deleteWorkAssignment('this.workAssignmentID')">Delete</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</div>
+
+<!-- Input form to collect information for a new Work Assignment. Will be sent in a HTTP request once the backend is up and connected -->
+<p>&nbsp;</p>
+<div id="insert">
+    <form method="POST" id="addAssignment">
+        <legend><strong>Add Work Assignment</strong></legend>
+          <fieldset class="fields">
+            <label> Employee_Name: </label> <select name="employeeID">
+                <option value="1">Amy Lane</option>
+                <option value="2">Charles Smith</option>
+                <option value="3">Ryan Johnson</option>
+                </select>
+            <label> Unit & Submission Date: </label> <select name="workOrderID">
+              <option value="4">B308 2024-04-28</option>
+              <option value="5">A201 2024-04-30</option>
+              </select>
+          </fieldset>
+          <input class="btn" type="submit" id="addAssignment" value="Add Assignment">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkAssignments()">    <!-- Reload the modified Work Assignments table after submitting this form -->
+	</form>
+</div>
+
+<!-- Input form to modify attributes for an existing Work Assignment. Will be sent in a HTTP request once the backend is up and connected -->
+<p>&nbsp;</p>
+<div id="update">
+  <form method="POST" id="UpdateAssignment">
+      <legend><strong>Update Work Assignment</strong></legend>
+          <fieldset class="fields">
+            <label> Employee_Name: </label> <select name="employeeID" value="1"> 
+                <option value="1">Amy Lane</option>
+                <option value="2">Charles Smith</option>
+                <option value="3">Ryan Johnson</option>
+            </select>
+            <label> Work_Order_Unit_And_Date: </label> <select name="employeeID" value="4">
+                <option value="4">B308 2024-04-28</option>
+                <option value="5">A201 2024-04-30</option>
+            </select>
+    </fieldset>
+    <input class="btn" type="submit" id="SaveUpdateAssignment" value="Save Update Assignment">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkAssignments()">
+  </form> 
+</div>
+
+
+<!-- Input form to confirm that the user wishes to delete this Work Assignment. Will be sent in a HTTP request once the backend is up and connected -->
+<p>&nbsp;</p>
+<div id="delete">
+  <form method="POST" id="deleteAssignment">
+      <legend><strong>Delete Work Assignment</strong></legend>
+          <fieldset class="fields">
+            <p>Are you sure you wish to delete this work assignment?</p>
+            <input type="hidden" name="workAssignmentID" id="deleteWorkAssignmentID" value="14">
+            <label><strong>Employee_Name:</strong></label> Amy Lane
+            <label> <strong>Work_Order_Unit_And_Date:</strong> </label> B308 2024-04-28 
+    </fieldset>
+    <input class="btn" type="submit" id="DeleteAssignmentt" value="Delete Assignment">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkAssignments()">
+  </form> 
+</div>
+<p>&nbsp;</p>
+</body>
+</html>

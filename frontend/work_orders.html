@@ -1,0 +1,135 @@
+<!-- WORK ORDERS PAGE -->
+<!-- Visualizes the WorkOrders Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Work Orders</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+
+  <!--
+        /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+  -->
+
+<script language="JavaScript">
+
+  function showform(dowhat) {
+
+    if (dowhat == 'insert'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+    }
+  }
+  function newWorkOrder() { showform('insert'); }
+  function updateWorkOrder(pid) { showform('update'); }
+  function browseWorkOrders() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+</head>
+
+<!-- The Work Orders table will always display when the page is clicked because browseWorkOrders() is called -->
+<body onload="browseWorkOrders()">
+<h1>Work Orders</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<p><strong>Browse Work Orders</strong></p>
+
+<!-- This Work Orders table will be autopopulated with entries from the database once that is connected -->
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Work_Order_ID</th>
+    <th>Unit</th>
+    <th>Description</th>
+    <th>Submission_Date</th>
+    <th>Completion_Date</th>
+    <th>Completion_Status</th>
+    <th><a href="#" onClick="newWorkOrder()">New</a></th>     <!-- Clicking this button triggers an event to display the add new Work Order form -->
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>A201</td>
+    <td>One of the living room windows does not stay open.</td>
+    <td>10-14-2024</td>
+    <td>10-16-2024</td>
+    <td>True</td>
+    <td><a href="#" onClick="updateWorkOrder('this.workOrderID')">Edit</a></td>    <!-- Clicking this button triggers an event to display the update Work Order form -->
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>A201</td>
+    <td>Fire alarm makes chirping sounds about every hour.</td>
+    <td>12-8-2023</td>
+    <td>12-9-2023</td>
+    <td>True</td>
+    <td><a href="#" onClick="updateWorkOrder('this.workOrderID')">Edit</a></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>B308</td>
+    <td>Window in the primary bedroom is leaking rainwater.</td>
+    <td>4-28-2024</td>
+    <td></td>
+    <td>False</td>
+    <td><a href="#" onClick="updateWorkOrder('this.workOrderID')">Edit</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</div>
+
+<!-- Input form to collect information for a new work order. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="insert">
+    <form method="POST" id="addWorkOrder">
+        <legend><strong>Add Work Order</strong></legend>
+          <fieldset class="fields">
+            <label> Unit: </label> <input type="text" name="unitID">
+            <label> Description: </label> <input type="text" name="description">
+            <label> Submission_Date: </label> <input type="text" name="submissionDate">
+          </fieldset>
+          <input class="btn" type="submit" id="addWorkOrder" value="Add Work Order">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkOrders()">   <!-- Reload the modified Work Orders table after submitting this form -->
+	</form>
+</div>
+
+<!-- Input form to modify attributes for an existing Work Order. Will be sent in a HTTP request once the backend is up and connected -->
+<p>&nbsp;</p>
+<div id="update">
+  <form method="POST" id="UpdateWorkOrder">
+      <legend><strong>Update Work Order</strong></legend>
+          <fieldset class="fields">
+            <label> Work_Order_ID: </label> <input type="text" name="workOrderID" value="1">
+            <label> Unit: </label> <input type="text" name="unitID" value="A201">
+            <label> Description: </label> <input type="text" name="description" value="One of the living room windows does not stay open.">
+            <label> Submission_Date: </label> <input type="text" name="submissionDate" value="10-14-2024">
+            <label> Completion_Date: </label> <input type="text" name="completionDate" value="10-16-2024">
+            <label> Completion_Status: </label> <input type="text" name="isCompleted" value="True">
+    </fieldset>
+    <input class="btn" type="submit" id="UpdateSaveWorkOrder" value="Save Update Work Order">
+          <input class="btn" type="button" value="cancel" onClick="browseWorkOrders()">
+  </form> 
+</div>
+</body>
+</html>

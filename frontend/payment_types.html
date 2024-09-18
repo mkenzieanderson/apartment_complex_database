@@ -1,0 +1,59 @@
+<!-- PAYMENT TYPES PAGE -->
+<!-- Visualizes the PaymentTypes Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Payment Types</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Payment Types</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse" style="display: block">
+
+<!-- Table of existing payment type data. Will be auto-populated with database once that is up and running -->
+  <p><strong>Browse Payment Types</strong></p>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Payment_Type</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Cashier's Check</td>
+    <td>Required information includes recipient identifier, account number, routing number, check number, and proof of signature. No processing fees.</td>
+  </tr>
+  <tr>
+    <td>Credit Card</td>
+    <td>Required information includes card holder namer, card number, expiration date, security code, and billing zip code. Does not take American Express. 2% processing fee.</td>
+  </tr>
+  <tr>
+    <td>Debit Card</td>
+    <td>Required information includes card holder namer, card number, expiration date, security code, and billing zip code. 1.5% processing fee.</td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</div>
+
+<!-- Insert new payment type form. Inputted data will be sent in an HTTP request once the backend is running -->
+<div id="insert" style="display: block">
+    <form id="addPaymentType">
+        <legend><strong>Add Payment Type</strong></legend>
+          <fieldset class="fields">
+            <label> Payment_Type: </label> <input type="text" name="paymentTypeID">
+            <label> Description: </label> <input type="text" name="description">
+          </fieldset>
+          <input class="btn" type="submit" id="addPaymentType" value="Add Payment Type">
+          <input class="btn" type="button" value="cancel">
+	</form>
+</div>
+
+<p>&nbsp;</p>
+
+</body>
+</html>

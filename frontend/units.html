@@ -1,0 +1,139 @@
+<!-- UNIT PAGE -->
+<!-- Visualizes the Units Table -->
+
+<!-- SOURCE CODE CITATION -->
+<!-- Date: 05/08/2024 -->
+<!-- Adapted from: https://canvas.oregonstate.edu/courses/1958399/assignments/9589658?module_item_id=24181850 -->
+
+<html>
+<head>
+<title>Units</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+
+    <!--
+          /*
+    * four DIVS: browse, insert, update, delete
+    * this function sets one visible the others not
+    */
+   -->
+
+<script language="JavaScript">
+  function showform(dowhat) {
+
+    if (dowhat == 'insert'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'none';
+    }
+    else if (dowhat == 'update'){
+      document.getElementById('browse').style.display = 'none';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'block';
+    }
+    else if (dowhat == 'all'){
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'block';
+      document.getElementById('update').style.display = 'block';
+    }
+    else { //by default display browse
+      document.getElementById('browse').style.display = 'block';
+      document.getElementById('insert').style.display = 'none';
+      document.getElementById('update').style.display = 'none';
+    }
+  }
+  function newUnit() { showform('insert'); }
+  function updateUnit(pid) { showform('update'); }
+  function browseUnits() { showform ('browse'); }
+  function showAll() { showform ('all'); }
+</script>
+
+
+</head>
+
+<!-- The Units table will always display when the page is clicked because browseUnits() is called -->
+<body onload="browseUnits()">
+<h1>Units</h1>
+
+[ <a href="index.html">Home</a> | <a href="units.html">Units</a> | <a href="residents.html">Residents</a> | <a href="rent_transactions.html">Rent Transactions</a> | <a href="payment_types.html">Payment Types</a> | <a href="employees.html">Employees</a> | <a href="work_orders.html">Work Orders</a> | <a href="work_assignments.html">Work Assignments</a> ]
+<div id="browse" style="display: block">
+<p><a href="#" onClick="showAll()">Display all Forms</a> </p>
+
+<!-- This Units table will be autopopulated with entries from the database once that is connected -->
+<p><strong>Browse Units</strong></p>
+<table border="1" cellpadding="5">
+  <tr>
+    <th>Unit</th>
+    <th>Vacancy_Status</th>
+    <th>Rent_Price</th>
+    <th>Bedrooms</th>
+    <th>Bathrooms</th>
+    <th>SQFT</th>
+    <th><a href="#" onClick="newUnit()">New</a></th>    <!-- Clicking this button triggers an event to display the add new Unit form -->
+  </tr>
+  <tr>
+    <td>A116</td>
+    <td>False</td>
+    <td>2400</td>
+    <td>3</td>
+    <td>2</td>
+    <td>1245</td>
+    <td><a href="#" onClick="updateUnit('this.unitID')">Edit</a></td>   <!-- Clicking this button triggers an event to display the udpate Unit form -->
+  </tr>
+  <tr>
+    <td>A142</td>
+    <td>True</td>
+    <td>1450</td>
+    <td>1</td>
+    <td>1</td>
+    <td>728</td>
+    <td><a href="#" onClick="updateUnit('this.unitID')">Edit</a></td>
+  </tr>
+  <tr>
+    <td>A201</td>
+    <td>True</td>
+    <td>2100</td>
+    <td>2</td>
+    <td>2</td>
+    <td>1180</td>
+    <td><a href="#" onClick="updateUnit('this.unitID')">Edit</a></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</div>
+
+<!-- Input form to collect information for a new Unit. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="insert">
+    <form method="POST" id="addUnit">
+        <legend><strong>Add Unit</strong></legend>
+          <fieldset class="fields">
+            <label> Unit: </label> <input type="text" name="unitID">
+            <label> Vacancy_Status: </label> <input type="text" name="isVacant">
+            <label> Rent_Price: </label> <input type="text" name="rent">
+            <label> Bedrooms: </label> <input type="text" name="roomCount">
+            <label> Bathrooms: </label> <input type="text" name="bathCount">
+            <label> SQFT: </label> <input type="text" name="sqft">
+          </fieldset>
+          <input class="btn" type="submit" id="addUnit" value="Add Unit">
+          <input class="btn" type="button" value="cancel" onClick="browseUnits()">    <!-- Reload the modified Units table after submitting this form -->
+	</form>
+</div>
+<p>&nbsp;</p>
+
+<!-- Input form to modify attributes for an existing Unit. Will be sent in a HTTP request once the backend is up and connected -->
+<div id="update">
+  <form method="POST" id="updateUnit">
+      <legend><strong>Update Unit</strong></legend>
+          <fieldset class="fields">
+            <label> Unit: </label> <input type="text" name="unitID" value="A116">
+            <label> Vacancy_Status: </label> <input type="text" name="isVacant" value="False">
+            <label> Rent_Price: </label> <input type="text" name="rent" value="2400">
+            <label> Bedrooms: </label> <input type="text" name="roomCount" value="3">
+            <label> Bathrooms: </label> <input type="text" name="bathCount" value="2">
+            <label> SQFT: </label> <input type="text" name="sqft" value="1245">
+    </fieldset>
+    <input class="btn" type="submit" id="UpdateSaveUnit" value="Save Update Unit">
+          <input class="btn" type="button" value="cancel" onClick="browseUnits()">
+  </form> 
+</div><!-- update -->
+</body>
+</html>
